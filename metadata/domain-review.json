@@ -1,0 +1,73 @@
+{
+  "repo": "notion-mob-offline-lens",
+  "language": "Go",
+  "category": "Mobile workflows",
+  "goal": "Create a Go reference implementation for offline workflows, centered on protocol validation, framed sample traffic, and bounds and ordering tests.",
+  "review_model": {
+    "terms": [
+      "form pressure",
+      "sync drift",
+      "local state",
+      "conflict cost"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "form pressure",
+      "signal": 50,
+      "slack": 28,
+      "drag": 18,
+      "confidence": 46,
+      "score": 120,
+      "lane": "watch"
+    },
+    {
+      "name": "stress",
+      "focus": "sync drift",
+      "signal": 75,
+      "slack": 35,
+      "drag": 11,
+      "confidence": 45,
+      "score": 197,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "local state",
+      "signal": 85,
+      "slack": 27,
+      "drag": 8,
+      "confidence": 70,
+      "score": 243,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "conflict cost",
+      "signal": 89,
+      "slack": 48,
+      "drag": 11,
+      "confidence": 76,
+      "score": 269,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "form pressure",
+      "signal": 57,
+      "slack": 21,
+      "drag": 21,
+      "confidence": 52,
+      "score": 124,
+      "lane": "watch"
+    }
+  ]
+}

@@ -1,69 +1,40 @@
 # notion-mob-offline-lens
 
-`notion-mob-offline-lens` is a focused Go codebase around create a Go reference implementation for offline workflows, centered on protocol validation, framed sample traffic, and bounds and ordering tests. It is meant to be easy to inspect, run, and extend without a hosted service.
+`notion-mob-offline-lens` is a compact Go repository for mobile workflows, centered on this goal: Create a Go reference implementation for offline workflows, centered on protocol validation, framed sample traffic, and bounds and ordering tests.
 
-## Notion Mob Offline Lens Walkthrough
+## Project Rationale
 
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the mobile workflows idea grounded in files that can be checked locally.
+The point is to make a small domain rule concrete enough that a reader can change it and immediately see what broke.
 
-## Reason For The Project
+## Notion Mob Offline Lens Review Notes
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+Start with `conflict cost` and `form pressure`. Those cases create the widest score spread in this repo, so they are the best quick check when the model changes.
 
-## Capabilities
+## Feature Set
 
-- Models local state with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep sync pressure changes visible in code review.
-- Includes extended examples for form constraints, including `surge` and `degraded`.
-- Documents offline paths tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
+- `fixtures/domain_review.csv` adds cases for form pressure and sync drift.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/notion-mob-offline-walkthrough.md` walks through the case spread.
+- The Go code includes a review path for `conflict cost` and `form pressure`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## How It Is Put Together
+## Architecture
 
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying mobile workflows behavior without needing a service or database unless the language project itself is SQL. The Go layout uses small packages and table-oriented tests so the behavior stays easy to follow.
+The core code exposes a scoring path and the added review layer uses `signal`, `slack`, `drag`, and `confidence`. The domain terms are `form pressure`, `sync drift`, `local state`, and `conflict cost`.
 
-## Where Things Live
+The added Go path is deliberately direct, with fixtures doing most of the explaining.
 
-- `policy`: Go package with the core model
-- `cmd`: small command entry point
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `go.mod`: Go module metadata
-
-## Getting It Running
-
-Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
-
-## Command Examples
+## Usage
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Test Command
 
-## Check The Work
+The check exercises the source code and the review fixture. `recovery` is the high score at 269; `baseline` is the low score at 120.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Next Improvements
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Data Notes
-
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
-
-## Tradeoffs
-
-The scoring model is simple by design. More domain-specific behavior should be added through explicit adapters or extra fixture classes rather than hidden constants.
-
-## Possible Extensions
-
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add one more mobile workflows fixture that focuses on a malformed or borderline input.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.
